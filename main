@@ -1,0 +1,194 @@
+import pygame
+import sys
+import random
+
+pygame.init()
+largeur_fenetre = 900
+hauteur_fenetre = 600
+vie = pygame.image.load("img/heart.png")
+voiture_violet = pygame.image.load("img/violet.png")
+voiture_rouge = pygame.image.load("img/rouge.png")
+voiture_vert = pygame.image.load("img/vert.png")
+voiture_jaune = pygame.image.load("img/jaune.png")
+voiture_orange = pygame.image.load("img/orange.png")
+fond_menu = pygame.image.load("img/banniere.jpg")
+fond_jeu = pygame.image.load("img/course.png")
+police = pygame.font.Font("Racers Energy.otf", 36)
+g_police = pygame.font.Font("Racers Energy.otf", 50)
+titre_police = pygame.font.Font("Racers Energy.otf", 95)
+nb_police = pygame.font.Font("PROCIRCUIT.otf", 50)
+
+
+fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre))
+pygame.display.set_caption("Typing Game")
+blanc = (255, 255, 255)
+noir = (0, 0, 0)
+mot = ["VITESSE", "COURSE", "PISTE", "VOITURE", "MOTO", "PNEU", "VICTOIRE","GAGNER","PERDU","ACCIDENT","PILOTE","VOLANT","EQUIPE"]
+mot_saisi = ""
+mot_a_deviner = random.choice(mot)
+
+def afficher_texte(texte, couleur, x, y):
+    texte_surface = police.render(texte, True, couleur)
+    fenetre.blit(texte_surface, (x, y))
+def afficher_texte_g(texte, couleur, x, y):
+    texte_surface = g_police.render(texte, True, couleur)
+    fenetre.blit(texte_surface, (x, y))
+def afficher_texte_titre(texte, couleur, x, y):
+    texte_surface = titre_police.render(texte, True, couleur)
+    fenetre.blit(texte_surface, (x, y))
+def afficher_texte_nb(texte, couleur, x, y):
+    texte_surface = nb_police.render(texte, True, couleur)
+    fenetre.blit(texte_surface, (x, y))
+
+def afficher_menu():
+    fenetre.blit(fond_menu, (0, 0))
+    afficher_texte_titre("Typing Game", noir, 178, 115)
+    pygame.draw.rect(fenetre, noir, (350, 360, 200, 50))
+    afficher_texte("Jouer", blanc, 390, 370)
+
+def victoire():
+    #afficher_texte_titre("Typing Game", noir, 178, 115)
+    pygame.draw.rect(fenetre, noir, (350, 360, 200, 50))
+    afficher_texte("VICTOIRE", noir, 390, 370)
+
+score = 0
+erreurs = 0
+def afficher_jeu():
+    global score, erreurs, mot_a_deviner, mot_saisi
+    temps_initial=0
+    temps_initial = pygame.time.get_ticks()
+    duree_max = 7000    
+    fenetre.blit(fond_jeu, (0, 0))
+    pygame.draw.rect(fenetre, blanc, (0, 0, 900, 50))
+    afficher_texte("Score : ", noir, 30, 10)
+    afficher_texte("Erreurs : ", noir, 600, 10)
+    pygame.draw.rect(fenetre, blanc, (320, 140, 250, 50))
+    
+    #temps_ecoule = pygame.time.get_ticks() - temps_initial
+    if erreurs < 3:
+        afficher_texte_g(mot_a_deviner, noir, 355, 10)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    mot_saisi = mot_saisi[:-1]
+                elif event.unicode.isalpha():
+                    mot_saisi += event.unicode.upper()
+        afficher_texte_g(mot_saisi, noir, 340, 150)    
+        
+        #if temps_initial < duree_max:
+        if mot_saisi == mot_a_deviner:
+            score += 1
+            mot_a_deviner = random.choice(mot)
+            mot_saisi = ""
+            temps_initial = pygame.time.get_ticks()
+
+        elif len(mot_a_deviner) == len(mot_saisi) and mot_a_deviner != mot_saisi:
+            mot_a_deviner = random.choice(mot)
+            erreurs+=1
+            mot_saisi = ""
+            temps_initial = pygame.time.get_ticks()
+
+    # else:
+    #     mot_saisi=""
+    #     afficher_texte_g(mot_saisi, noir, 340, 150)        
+    #     afficher_texte_g(mot_a_deviner, noir, 355, 10)
+    #     temps_initial = 0
+    
+    if score==0:
+        afficher_texte_nb("0", noir, 160, 0)
+        fenetre.blit(voiture_vert, (-400, 350))        
+    elif score==1:
+        afficher_texte_nb("1", noir, 160, 0)
+        fenetre.blit(voiture_vert, (-300, 350))
+    elif score==2:
+        afficher_texte_nb("2", noir, 160, 0)
+        fenetre.blit(voiture_vert, (-200, 350))        
+    elif score==3:
+        afficher_texte_nb("3", noir, 160, 0)
+        fenetre.blit(voiture_vert, (-100, 350))
+    elif score == 4:
+        afficher_texte_nb("4", noir, 160, 0)
+        fenetre.blit(voiture_vert, (0, 350))
+    elif score == 5:
+        afficher_texte_nb("5", noir, 160, 0)
+        fenetre.blit(voiture_vert, (100, 350))
+    elif score == 6:
+        afficher_texte_nb("6", noir, 160, 0)
+        fenetre.blit(voiture_vert, (200, 350))
+    elif score == 7:
+        afficher_texte_nb("7", noir, 160, 0)
+        fenetre.blit(voiture_vert, (300, 350))
+    elif score == 8:
+        afficher_texte_nb("8", noir, 160, 0)
+        fenetre.blit(voiture_vert, (400, 350))
+    elif score == 9:
+        afficher_texte_nb("9", noir, 160, 0)
+        fenetre.blit(voiture_vert, (500, 350))
+        victoire()
+        #afficher_texte_g("Victoire !!", blanc, 300,350)
+        
+    if erreurs == 0:
+        fenetre.blit(vie,(770,-5))
+        fenetre.blit(vie,(810,-5))
+        fenetre.blit(vie,(850,-5))
+    elif erreurs == 1:
+        fenetre.blit(vie,(770,-5))
+        fenetre.blit(vie,(810,-5))
+    elif erreurs == 2:
+        fenetre.blit(vie,(770,-5))
+    elif erreurs == 3:
+        afficher_texte_g("PERDU !!", blanc, 350,400)
+def deplacer_image(image, x, y):
+    fenetre.blit(image, (x, y))
+
+def base_jeu():
+    tour = pygame.time.Clock()
+    en_jeu = False
+    image_x = -400 
+    image_x2 = image_x-800
+    image_x3 = image_x-1400
+    image_x4 = image_x-2000
+    image_x5 = image_x-2600
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if not en_jeu:
+                    if 300 <= event.pos[0] <= 550 and 350 <= event.pos[1] <= 450:
+                        en_jeu = True
+                else:
+                    pass
+
+        if not en_jeu:
+            afficher_menu()
+            deplacer_image(voiture_violet, image_x, 410)
+            deplacer_image(voiture_jaune, image_x2, 410)
+            deplacer_image(voiture_vert, image_x3, 410)
+            deplacer_image(voiture_orange, image_x4, 410)
+            deplacer_image(voiture_rouge, image_x5, 410)
+            image_x += 7
+            image_x2 += 7
+            image_x3 += 7
+            image_x4 += 7
+            image_x5 += 7
+            tour.tick(100)
+            
+            if image_x5 > largeur_fenetre:
+                en_jeu = False
+                image_x = -400 
+                image_x2 = image_x-800
+                image_x3 = image_x-1400
+                image_x4 = image_x-2000
+                image_x5 = image_x-2600
+        else:
+            afficher_jeu()
+        pygame.display.flip()
+
+
+base_jeu()
